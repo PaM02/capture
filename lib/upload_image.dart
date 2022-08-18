@@ -36,40 +36,87 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
     setState(() {
       showSpinner = true;
     });
+    String addimageUrl = 'http://likid-dev.seesay-consulting.com/api/enrollment';
+    // String addimageUrl = 'https://fakestoreapi.com/products';
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+    };
+    // request.fields['category'] = "CLIENT";
+    // request.fields['firstname'] = "Static title";
+    // request.fields['lastname'] = "Static title";
+    // request.fields['email'] = "paf@gmail.com";
+    // request.fields['mobile'] = "7775";
+    // request.fields['passport'] = "755";
+    // request.fields['adresse'] = "Dakar";
+    // request.fields['enterprise'] = "Static title";
+    // request.fields['contact_enterprise_mobile'] = "77555";
+        Map<String, String> body = {
+          'category':  "CLIENT",
+          'firstname':  "Static title",
+          'lastname':  "Static title",
+          'email':  "paf102@gmail.com",
+          'mobile':  "7775125",
+          'passport':  "75545116",
+          'adresse':  "Dakar1",
+          'enterprise':  "Static title",
+          'contact_enterprise_mobile':  "756451",
 
-    var stream = http.ByteStream(image!.openRead());
-    stream.cast();
+      };
 
-    var length = await image!.length();
-
-    var uri = Uri.parse('https://fakestoreapi.com/products');
-
-    var request = http.MultipartRequest('POST', uri);
-
-    request.fields['title'] = "Static title";
-    request.fields['price'] = "20";
-
-    var multiport = http.MultipartFile('image', stream, length);
-
-    request.files.add(multiport);
-
+    // Map<String, String> body = {
+    //   'title':  "Static title"};
+    var request = http.MultipartRequest('POST', Uri.parse(addimageUrl))
+      ..fields.addAll(body)
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('passport_img', image!.path));
     var response = await request.send();
 
-    //print(response.stream.toString());
     if (response.statusCode == 200) {
+      var responseData =await response.stream.toBytes();
+      var reslt = String.fromCharCodes(responseData);
+      print(request.fields['image']);
+      setState(() {
+        showSpinner = false;
+      });
+      print('image uploaded');
+    } else {
       var responseData =await response.stream.toBytes();
       var reslt = String.fromCharCodes(responseData);
       print(reslt);
       setState(() {
         showSpinner = false;
       });
-      print('image uploaded');
-    } else {
-      print('failed');
-      setState(() {
-        showSpinner = false;
-      });
     }
+
+
+
+
+    // if (response.statusCode == 200) {
+
+    // } else {
+
+    // }
+
+    // var stream = http.ByteStream(image!.openRead());
+    // stream.cast();
+
+    // var length = await image!.length();
+
+    // var uri = Uri.parse('https://fakestoreapi.com/products');
+
+    // var request = http.MultipartRequest('POST', uri);
+
+    // request.fields['title'] = "Static title";
+    // request.fields['price'] = "20";
+
+    // var multiport = http.MultipartFile('image', stream, length);
+
+    // request.files.add(multiport);
+
+    // var response = await request.send();
+
+    //print(response.stream.toString());
+
   }
 
   @override
